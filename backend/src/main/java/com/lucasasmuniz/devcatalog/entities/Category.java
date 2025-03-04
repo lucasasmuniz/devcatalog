@@ -11,25 +11,30 @@ import jakarta.persistence.Table;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
 
-    public Category(){
+    public Category() {
     }
-    public Category(long id, String name){
+
+    public Category(long id, String name) {
         this.id = id;
         this.name = name;
     }
+
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -41,17 +46,22 @@ public class Category {
         result = prime * result + (int) (id ^ (id >>> 32));
         return result;
     }
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Category other = (Category) obj;
-        if (id != other.id)
+        if (id != other.id) {
             return false;
+        }
         return true;
     }
 }
