@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lucasasmuniz.devcatalog.dto.CategoryDTO;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.repositories.CategoryRepository;
 import com.lucasasmuniz.devcatalog.services.exceptions.DatabaseException;
 import com.lucasasmuniz.devcatalog.services.exceptions.ResourceNotFoundException;
 
-import dto.CategoryDTO;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service

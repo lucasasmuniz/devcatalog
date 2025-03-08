@@ -1,4 +1,4 @@
-package dto;
+package com.lucasasmuniz.devcatalog.dto;
 
 import com.lucasasmuniz.devcatalog.entities.Category;
 

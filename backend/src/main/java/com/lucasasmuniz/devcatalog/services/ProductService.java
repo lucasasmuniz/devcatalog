@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
 import com.lucasasmuniz.devcatalog.repositories.CategoryRepository;
@@ -15,7 +16,6 @@ import com.lucasasmuniz.devcatalog.repositories.ProductRepository;
 import com.lucasasmuniz.devcatalog.services.exceptions.DatabaseException;
 import com.lucasasmuniz.devcatalog.services.exceptions.ResourceNotFoundException;
 
-import dto.ProductDTO;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -54,7 +54,7 @@ public class ProductService {
             return new ProductDTO(entity, entity.getCategories());
 
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException("Id not found" + id);
+            throw new ResourceNotFoundException("Id not found " + id);
         }
     }
     @Transactional(propagation = Propagation.SUPPORTS)
