@@ -1,5 +1,6 @@
 package com.lucasasmuniz.devcatalog.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.Set;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
 
-public class ProductDTO {
+public class ProductDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Long id;
     private String name;
     private String description;

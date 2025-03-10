@@ -1,8 +1,12 @@
 package com.lucasasmuniz.devcatalog.dto;
 
+import java.io.Serializable;
+
 import com.lucasasmuniz.devcatalog.entities.Category;
 
-public class CategoryDTO {
+public class CategoryDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Long id;
     private String name;
 
