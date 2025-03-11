@@ -11,12 +11,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((authorizeConfig) -> {
-            	authorizeConfig.requestMatchers("/**").permitAll();
-            	authorizeConfig.anyRequest().authenticated();
-            });
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/**").permitAll() // Permite todas as rotas
+            )
+            .csrf(csrf -> csrf.disable()) // Desativa CSRF
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())); // Permite o H2 Console
+
         return http.build();
     }
 }
