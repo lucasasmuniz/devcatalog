@@ -27,7 +27,7 @@ public class ProductDTO implements Serializable{
     private String name;
     
     @NotBlank(message = "Campo obrigatório")
-	@Min(value = 20, message = "Deve ter no mínimo 20 caracteres")	
+	@Size(min = 10, message = "Deve ter no mínimo 10 caracteres")	
     private String description;
     
     @Positive(message = "O preço deve ser positivo")
