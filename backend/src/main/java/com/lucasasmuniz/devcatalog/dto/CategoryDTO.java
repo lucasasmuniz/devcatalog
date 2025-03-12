@@ -4,10 +4,16 @@ import java.io.Serializable;
 
 import com.lucasasmuniz.devcatalog.entities.Category;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class CategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
     private Long id;
+    
+    @NotBlank(message = "Campo Obrigatório")
+    @Size(min = 5, max = 20, message = "Deve ter entre 5 e 20 caracteres")
     private String name;
 
     public CategoryDTO(){}
