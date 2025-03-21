@@ -1,6 +1,5 @@
 package com.lucasasmuniz.devcatalog.entities;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_category")
-public class Category implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class Category{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

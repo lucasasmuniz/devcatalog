@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,16 +19,16 @@ import jakarta.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ExceptionControllerHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<StandardException> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardException err = new StandardException();
-        err.setTimestamp(Instant.now());
-        err.setStatus(status.value());
-        err.setMessage(e.getMessage());
-        err.setPath(request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
-    }
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<StandardException> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		StandardException err = new StandardException();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
 
     @ExceptionHandler(DatabaseException.class)
     public ResponseEntity<StandardException> database(DatabaseException e, HttpServletRequest request) {

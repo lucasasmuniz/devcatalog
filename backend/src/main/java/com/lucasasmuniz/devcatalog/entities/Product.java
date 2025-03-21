@@ -1,6 +1,5 @@
 package com.lucasasmuniz.devcatalog.entities;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
@@ -18,8 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name ="tb_product")
-public class Product implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class Product{
 	
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
