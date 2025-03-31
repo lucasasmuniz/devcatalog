@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.tests.Factory;
+import com.lucasasmuniz.devcatalog.tests.TokenUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,10 +31,15 @@ public class ProductControllerIT {
 	@Autowired 
 	private ObjectMapper objectMapper;
 	
+	@Autowired
+	private TokenUtil tokenUtil;
+	
 	private long existingId;
 	private long nonExistingId;
 	private long countTotalProducts; 
 	private ProductDTO productDTO;
+	
+	private String username, password, bearerToken;
 	
 	@BeforeEach
 	void setUp() throws Exception{
@@ -42,6 +48,11 @@ public class ProductControllerIT {
 		countTotalProducts = 25L;
 		productDTO = Factory.createProductDTO();
 		
+		username = "maria@gmail.com";
+		password = "123456";
+		
+		bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
+		
 	}
 	@Test
 	public void findAllPagedShouldReturnSortedPageWhenSortedByName() throws Exception {
@@ -49,7 +60,7 @@ public class ProductControllerIT {
 				.accept(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.totalElements").value(countTotalProducts));
+		result.andExpect(jsonPath("$.page.totalElements").value(countTotalProducts));
 		result.andExpect(jsonPath("$.content").exists());
 		result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
 		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
@@ -64,6 +75,7 @@ public class ProductControllerIT {
 		String expectedDescription = productDTO.getDescription();
 		
     	ResultActions result = mockMvc.perform(put("/products/{id}", existingId)
+    			.header("Authorization", "Bearer " + bearerToken)
     			.content(jsonBody)
     			.contentType(MediaType.APPLICATION_JSON)
     			.accept(MediaType.APPLICATION_JSON));
@@ -79,6 +91,7 @@ public class ProductControllerIT {
     	String jsonBody = objectMapper.writeValueAsString(productDTO);
     	
     	ResultActions result = mockMvc.perform(put("/products/{id}", nonExistingId)
+    			.header("Authorization", "Bearer " + bearerToken)
     			.content(jsonBody)
     			.contentType(MediaType.APPLICATION_JSON)
     			.accept(MediaType.APPLICATION_JSON));
