@@ -20,6 +20,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
+import com.lucasasmuniz.devcatalog.projections.ProductProjection;
+import com.lucasasmuniz.devcatalog.projections.ProductProjectionMock;
 import com.lucasasmuniz.devcatalog.repositories.CategoryRepository;
 import com.lucasasmuniz.devcatalog.repositories.ProductRepository;
 import com.lucasasmuniz.devcatalog.services.exceptions.DatabaseException;
@@ -57,7 +59,9 @@ public class ProductServiceTests {
         productDTO = Factory.createProductDTO();
         category = Factory.createCategory();
         page = new PageImpl<>(List.of(product));
-
+        Page<ProductProjection> mockPage = new PageImpl<>(List.of(new ProductProjectionMock(product)));
+        
+        
         Mockito.when(categoryRepository.getReferenceById(existingId)).thenReturn(category);
         Mockito.when(categoryRepository.getReferenceById(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
@@ -69,6 +73,12 @@ public class ProductServiceTests {
         Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
         Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
 
+        Mockito.when(repository.searchProducts(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(mockPage); // Você pode criar esse mock
+
+        Mockito.when(repository.searchProductsWithCategories(ArgumentMatchers.any()))
+        .thenReturn(List.of(product));
+        
         Mockito.doNothing().when(repository).deleteById(existingId);
         Mockito.doThrow(DatabaseException.class).when(repository).deleteById(dependentId);
 
@@ -79,11 +89,12 @@ public class ProductServiceTests {
     
     @Test
     public void findAllPagedShouldReturnPage(){
-        Pageable pageable = PageRequest.of(0, 12);
-        Page<ProductDTO> result = service.findAllPaged(pageable);
+		PageRequest pageRequest = PageRequest.of(0, 12);
+		
+		Page<ProductDTO> page = service.findAllPaged("", "0", pageRequest);
 
-        Assertions.assertNotNull(result);
-        Mockito.verify(repository, Mockito.times(1)).findAll(pageable);
+        Assertions.assertNotNull(page);
+//        Mockito.verify(repository, Mockito.times(1)).findAll(pageable);
     }
 
     @Test

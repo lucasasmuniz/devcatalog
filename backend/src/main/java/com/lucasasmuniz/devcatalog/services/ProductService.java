@@ -1,8 +1,13 @@
 package com.lucasasmuniz.devcatalog.services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
+import com.lucasasmuniz.devcatalog.projections.ProductProjection;
 import com.lucasasmuniz.devcatalog.repositories.CategoryRepository;
 import com.lucasasmuniz.devcatalog.repositories.ProductRepository;
 import com.lucasasmuniz.devcatalog.services.exceptions.DatabaseException;
 import com.lucasasmuniz.devcatalog.services.exceptions.ResourceNotFoundException;
+import com.lucasasmuniz.devcatalog.utils.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -27,8 +34,23 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAllPaged(Pageable pageable) {
-        return repository.findAll(pageable).map(x -> new ProductDTO(x, x.getCategories()));
+    public Page<ProductDTO> findAllPaged(String name, String categoryIds, Pageable pageable) {
+    	
+    	List<Long> categoryList = new ArrayList<>();
+    	if(!categoryIds.equals("0")) {
+    		categoryList = Arrays.asList(categoryIds.split(",")).stream().map(x -> Long.parseLong(x)).toList();
+    	}
+    	
+    	Page<ProductProjection> page = repository.searchProducts(categoryList,name,pageable);
+    	List<Long> productIds = page.map(x -> x.getId()).toList();
+    	
+    	List<Product> entities = repository.searchProductsWithCategories(productIds);
+    	entities = Utils.orderListByReference(page.getContent(), entities);
+    	
+    	List<ProductDTO> dtos = entities.stream().map(x -> new ProductDTO(x, x.getCategories())).toList();
+    	Page<ProductDTO> pageDTO = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+    	
+    	return pageDTO;
     }
 
     @Transactional(readOnly = true)
