@@ -6,20 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.lucasasmuniz.devcatalog.entities.Product;
+import com.lucasasmuniz.devcatalog.projections.IdProjection;
 import com.lucasasmuniz.devcatalog.projections.ProductProjection;
 
 public class Utils {
 
-	public static List<Product> orderListByReference(List<ProductProjection> ordered, List<Product> unordered){
+	public static <ID> List<? extends IdProjection<ID>> orderListByReference(List<? extends IdProjection<ID>> ordered, List<? extends IdProjection<ID>> unordered){
 		
-		List<Product> result = new ArrayList<>();
+		List<IdProjection<ID>> result = new ArrayList<>();
 		
-		Map<Long, Product> map = new HashMap<>();
-		for(Product obj : unordered) {
+		Map<ID, IdProjection<ID>> map = new HashMap<>();
+		for(IdProjection<ID> obj : unordered) {
 			map.put(obj.getId(), obj);
 		}
 		
-		for(ProductProjection obj:ordered) {
+		for(IdProjection<ID> obj:ordered) {
 			result.add(map.get(obj.getId()));
 		}
 		

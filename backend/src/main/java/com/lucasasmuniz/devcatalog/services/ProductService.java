@@ -33,7 +33,8 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
     public Page<ProductDTO> findAllPaged(String name, String categoryIds, Pageable pageable) {
     	
     	List<Long> categoryList = new ArrayList<>();
@@ -45,7 +46,7 @@ public class ProductService {
     	List<Long> productIds = page.map(x -> x.getId()).toList();
     	
     	List<Product> entities = repository.searchProductsWithCategories(productIds);
-    	entities = Utils.orderListByReference(page.getContent(), entities);
+    	entities = (List<Product>) Utils.orderListByReference(page.getContent(), entities);
     	
     	List<ProductDTO> dtos = entities.stream().map(x -> new ProductDTO(x, x.getCategories())).toList();
     	Page<ProductDTO> pageDTO = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
