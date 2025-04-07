@@ -72,21 +72,22 @@ public class AuthorizationServerConfig {
 	@Bean
 	@Order(2)
 	public SecurityFilterChain asSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+	    httpSecurity
+	        .securityMatcher("/oauth2/**", "/.well-known/**", "/token")
+	        .with(OAuth2AuthorizationServerConfigurer.authorizationServer(), Customizer.withDefaults());
 
-		HttpSecurity http = httpSecurity.securityMatcher("/**");
+	    httpSecurity
+	        .getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+	        .tokenEndpoint(tokenEndpoint -> tokenEndpoint
+	            .accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
+	            .authenticationProvider(new CustomPasswordAuthenticationProvider(
+	                authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder
+	            ))
+	        );
 
-		http.with(OAuth2AuthorizationServerConfigurer.authorizationServer(), Customizer.withDefaults());
+	    httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
-		// @formatter:off
-		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
-				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
-				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder)));
-
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
-		// @formatter:on
-
-		return http.build();
+	    return httpSecurity.build();
 	}
 
 	@Bean

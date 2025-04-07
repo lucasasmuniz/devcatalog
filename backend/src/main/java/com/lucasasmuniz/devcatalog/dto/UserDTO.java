@@ -1,6 +1,5 @@
 package com.lucasasmuniz.devcatalog.dto;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,8 +8,7 @@ import com.lucasasmuniz.devcatalog.entities.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class UserDTO implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class UserDTO{
 	
 	private long id;
 	

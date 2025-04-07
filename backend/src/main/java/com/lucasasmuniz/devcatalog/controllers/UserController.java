@@ -43,7 +43,6 @@ public class UserController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO insertDTO) {
         UserDTO dto = service.insert(insertDTO);
@@ -66,7 +65,6 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
-
     }
 }
 
