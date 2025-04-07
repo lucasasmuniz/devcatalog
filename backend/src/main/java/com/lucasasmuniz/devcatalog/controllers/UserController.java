@@ -42,7 +42,13 @@ public class UserController {
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_OPERATOR','ROLE_ADMIN')")
+    @GetMapping("/logged")
+    public ResponseEntity<UserDTO> findLoggedUser(){
+        return ResponseEntity.ok(service.findLoggedUser());
+    }
+    
     @PostMapping
     public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO insertDTO) {
         UserDTO dto = service.insert(insertDTO);
