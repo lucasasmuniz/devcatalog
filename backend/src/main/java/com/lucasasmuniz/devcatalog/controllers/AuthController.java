@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasasmuniz.devcatalog.dto.EmailDTO;
+import com.lucasasmuniz.devcatalog.dto.PasswordRecoveryRequestDTO;
 import com.lucasasmuniz.devcatalog.services.AuthService;
 
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ public class AuthController {
 	private AuthService service;
 	
 	@PostMapping("/recover-token")
-	public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody EmailDTO dto){
+	public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody PasswordRecoveryRequestDTO dto){
 		service.createRecoverToken(dto);
 		return ResponseEntity.noContent().build();
 	}
