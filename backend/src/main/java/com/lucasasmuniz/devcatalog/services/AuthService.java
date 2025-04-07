@@ -1,18 +1,18 @@
 package com.lucasasmuniz.devcatalog.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lucasasmuniz.devcatalog.dto.PasswordRecoveryRequestDTO;
 import com.lucasasmuniz.devcatalog.dto.EmailContentDTO;
+import com.lucasasmuniz.devcatalog.dto.NewPasswordDTO;
+import com.lucasasmuniz.devcatalog.dto.PasswordRecoveryRequestDTO;
 import com.lucasasmuniz.devcatalog.entities.PasswordRecover;
 import com.lucasasmuniz.devcatalog.entities.User;
 import com.lucasasmuniz.devcatalog.repositories.PasswordRecoverRepository;
@@ -22,6 +22,9 @@ import com.lucasasmuniz.devcatalog.services.exceptions.ResourceNotFoundException
 
 @Service
 public class AuthService {
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private EmailProducerService emailProduce;
@@ -57,5 +60,16 @@ public class AuthService {
 				+ recoverUri + token + ". Seu token expira em " + tokenExpirationTime + " minutos!";
 		
 		emailProduce.sendKafkaMessage(new EmailContentDTO(dto.getEmail(), "Recuperação de senha - Devcatalog", text));
+	}
+
+	public void saveNewPassword(NewPasswordDTO dto) {
+		List<PasswordRecover> results = passwordRecoverRepository.searchValidTokens(dto.getToken(), Instant.now());
+		if(results.size() == 0) {
+			throw new ResourceNotFoundException("Invalid token");
+		}
+		
+		User user = userRepository.findByEmail(results.getFirst().getEmail());
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		userRepository.save(user);
 	}
 }

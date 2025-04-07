@@ -3,11 +3,13 @@ package com.lucasasmuniz.devcatalog.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasasmuniz.devcatalog.dto.PasswordRecoveryRequestDTO;
+import com.lucasasmuniz.devcatalog.dto.NewPasswordDTO;
 import com.lucasasmuniz.devcatalog.services.AuthService;
 
 import jakarta.validation.Valid;
@@ -22,6 +24,12 @@ public class AuthController {
 	@PostMapping("/recover-token")
 	public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody PasswordRecoveryRequestDTO dto){
 		service.createRecoverToken(dto);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping("/new-password")
+	public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO dto){
+		service.saveNewPassword(dto);
 		return ResponseEntity.noContent().build();
 	}
 }
