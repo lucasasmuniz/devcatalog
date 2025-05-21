@@ -26,6 +26,7 @@ public class ExceptionControllerHandler {
 		StandardException err = new StandardException();
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
+        err.setError("Entity Exception");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
@@ -42,6 +43,7 @@ public class ExceptionControllerHandler {
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
