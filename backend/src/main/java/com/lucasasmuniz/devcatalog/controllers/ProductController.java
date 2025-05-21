@@ -22,15 +22,25 @@ import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.projections.ProductProjection;
 import com.lucasasmuniz.devcatalog.services.ProductService;
 
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Products", description = "Controller for Products")
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     private ProductService service;
-
+    
+    @Operation(description = "Get all products"
+    		, summary = "Get all products paged, ordered and you can search by name and category id"
+    		, responses = {
+				@ApiResponse(description = "Ok", responseCode = "200")
+    		})
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> findAllPaged(
     		@RequestParam(value = "name", defaultValue= "" ) String name, 
