@@ -42,8 +42,7 @@ public class ProductService {
     		categoryList = Arrays.asList(categoryIds.split(",")).stream().map(x -> Long.parseLong(x)).toList();
     	}
     	
-    	Long[] categoryArray = categoryList.toArray(new Long[0]);
-    	Page<ProductProjection> page = repository.searchProducts(categoryArray,name,pageable);
+    	Page<ProductProjection> page = repository.searchProducts(categoryList,name,pageable);
     	List<Long> productIds = page.map(x -> x.getId()).toList();
     	
     	List<Product> entities = repository.searchProductsWithCategories(productIds);
