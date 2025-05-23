@@ -10,6 +10,8 @@ import java.util.Set;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,23 +22,31 @@ import jakarta.validation.constraints.Size;
 public class ProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	@Schema(description = "Database generated product ID")
     private Long id;
     
+	@Schema(description = "Product name")
     @NotBlank(message = "Campo obrigatório")
 	@Size(min = 3, max = 60, message = "Deve ter entre 3 a 60 caracteres")	    
     private String name;
     
+	@Schema(description = "Product description")
     @NotBlank(message = "Campo obrigatório")
 	@Size(min = 10, message = "Deve ter no mínimo 10 caracteres")	
     private String description;
     
+	@Schema(description = "Product price")
     @Positive(message = "O preço deve ser positivo")
     private BigDecimal price;
+	
+	@Schema(description = "Product image url")
     private String imgUrl;
     
+    @Schema(description = "Product date")
     @PastOrPresent(message = "A data do produto não pode ser futura")
     private Instant date;
 
+    @Schema(description = "Product categories")
     private List<CategoryDTO> categories = new ArrayList<>();
 
     public ProductDTO(){}

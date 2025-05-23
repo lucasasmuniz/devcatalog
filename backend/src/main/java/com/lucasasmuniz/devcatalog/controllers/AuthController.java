@@ -1,6 +1,7 @@
 package com.lucasasmuniz.devcatalog.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,7 +34,7 @@ public class AuthController {
 					@ApiResponse(description = "Not Found", responseCode = "404"),
 			        @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
 			})
-	@PostMapping("/recover-token")
+	@PostMapping(value = "/recover-token", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody PasswordRecoveryRequestDTO dto){
 		service.createRecoverToken(dto);
 		return ResponseEntity.noContent().build();
@@ -46,7 +47,7 @@ public class AuthController {
 					@ApiResponse(description = "Not Found", responseCode = "404"),
 			        @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
 			})
-	@PutMapping("/new-password")
+	@PutMapping(value = "/new-password", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO dto){
 		service.saveNewPassword(dto);
 		return ResponseEntity.noContent().build();

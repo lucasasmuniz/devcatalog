@@ -5,21 +5,28 @@ import java.util.Set;
 
 import com.lucasasmuniz.devcatalog.entities.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserDTO{
 	
+	@Schema(description = "Database generated product ID")
 	private long id;
 	
+	@Schema(description = "User first name")
 	@NotBlank(message = "Campo Obrigatório")
 	private String firstName;
+	
+	@Schema(description = "User last name")
 	private String lastName;
 	
+	@Schema(description = "User email")
 	@Email(message = "Favor entrar e-mail válido")
 	@NotBlank(message = "Campo obrigatório")
 	private String email;
 	
+	@Schema(description = "User's roles")
 	Set<RoleDTO> roles = new HashSet<>();
 	public UserDTO() {
 	}
