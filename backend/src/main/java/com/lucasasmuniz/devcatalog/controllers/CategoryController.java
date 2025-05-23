@@ -19,8 +19,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.lucasasmuniz.devcatalog.dto.CategoryDTO;
 import com.lucasasmuniz.devcatalog.services.CategoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Categories", description = "Controller for Categories")
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -28,16 +33,36 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Operation(description = "Get all categories", 
+    		summary = "Get a list containing all categories",
+    		responses = {
+				 @ApiResponse(description = "Ok", responseCode = "200")
+    		})
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> findAll(){
         return ResponseEntity.ok(categoryService.findAll());
     }
 
+    @Operation(description = "Get category by id", 
+    		summary = "Get a category by id",
+    		responses = {
+				 @ApiResponse(description = "Ok", responseCode = "200"),
+				 @ApiResponse(description = "Not Found", responseCode = "404")
+    		})
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
+    @Operation(description = "Post a category", 
+    		summary = "Save a new category on database",
+    		responses = {
+				 @ApiResponse(description = "Created", responseCode = "201"),
+		         @ApiResponse(description = "Unauthorized", responseCode = "401"),
+		         @ApiResponse(description = "Forbidden", responseCode = "403"),
+		         @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
+    		})
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryDTO categoryDTO) {
@@ -47,7 +72,17 @@ public class CategoryController {
         return ResponseEntity.created(uri).body(categoryDTO);
 
     }
-
+    
+    @Operation(description = "Update a category", 
+    		summary = "Update an existing category",
+    		responses = {
+				 @ApiResponse(description = "Ok", responseCode = "200"),
+				 @ApiResponse(description = "Not Found", responseCode = "404"),
+		         @ApiResponse(description = "Unauthorized", responseCode = "401"),
+		         @ApiResponse(description = "Forbidden", responseCode = "403"),
+		         @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
+    		})
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> update(@PathVariable Long id,@Valid @RequestBody CategoryDTO categoryDTO) {
@@ -56,6 +91,17 @@ public class CategoryController {
 
     }
 
+    @Operation(description = "Delete a category", 
+    		summary = "Delete an existing category",
+    		responses = {
+				 @ApiResponse(description = "No Content", responseCode = "204"),
+		         @ApiResponse(description = "Bad Request", responseCode = "400"),
+				 @ApiResponse(description = "Not Found", responseCode = "404"),
+		         @ApiResponse(description = "Unauthorized", responseCode = "401"),
+		         @ApiResponse(description = "Forbidden", responseCode = "403"),
+		         @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
+    		})
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
