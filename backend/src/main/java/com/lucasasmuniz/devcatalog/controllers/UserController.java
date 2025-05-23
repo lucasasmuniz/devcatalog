@@ -5,6 +5,7 @@ import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +46,7 @@ public class UserController {
     		})
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<UserDTO>> findAllPaged(Pageable pageable){
         return ResponseEntity.ok(service.findAllPaged(pageable));
     }
@@ -60,7 +61,7 @@ public class UserController {
     		})
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
@@ -74,7 +75,7 @@ public class UserController {
     		})
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ROLE_OPERATOR','ROLE_ADMIN')")
-    @GetMapping("/logged")
+    @GetMapping(value = "/logged", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> findLoggedUser(){
         return ResponseEntity.ok(service.findLoggedUser());
     }
@@ -87,7 +88,7 @@ public class UserController {
    		         @ApiResponse(description = "Unauthorized", responseCode = "401"),
 		         @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
     		})
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO insertDTO) {
         UserDTO dto = service.insert(insertDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
