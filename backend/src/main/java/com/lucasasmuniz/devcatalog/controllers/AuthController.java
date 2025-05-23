@@ -12,8 +12,10 @@ import com.lucasasmuniz.devcatalog.dto.PasswordRecoveryRequestDTO;
 import com.lucasasmuniz.devcatalog.dto.NewPasswordDTO;
 import com.lucasasmuniz.devcatalog.services.AuthService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Auth", description = "Controller for Auth")
 @RestController 
 @RequestMapping("/auth")
 public class AuthController {
