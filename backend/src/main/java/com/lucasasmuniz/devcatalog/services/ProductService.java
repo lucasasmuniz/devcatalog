@@ -54,7 +54,7 @@ public class ProductService {
     	
     	List<ProductDTO> dtos = entities.stream().map(x -> new ProductDTO(x, x.getCategories())
     			.add(linkTo(methodOn(ProductController.class).findAllPaged(name, categoryIds, pageable)).withSelfRel())
-    			.add(linkTo(methodOn(ProductController.class).findById(x.getId())).withRel("Get product by id")))
+    			.add(linkTo(methodOn(ProductController.class).findById(x.getId())).withRel("GET - Product by id")))
     			.toList();
     	Page<ProductDTO> pageDTO = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
     	
@@ -64,7 +64,11 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
         Product entity = repository.findById(id).orElseThrow(() -> (new ResourceNotFoundException("Entity not found")));
-        return new ProductDTO(entity, entity.getCategories());
+        return new ProductDTO(entity, entity.getCategories())
+        		.add(linkTo(methodOn(ProductController.class).findById(id)).withSelfRel())
+        		.add(linkTo(methodOn(ProductController.class).findAllPaged(null, null, null)).withRel("GET - Products"))
+        		.add(linkTo(methodOn(ProductController.class).update(id, null)).withRel("PUT - Update product"))
+        		.add(linkTo(methodOn(ProductController.class).delete(id)).withRel("DELETE - Delete product"));
     }
 
     @Transactional
@@ -72,7 +76,8 @@ public class ProductService {
         Product entity = new Product();
         copyDTOToEntity(productDTO, entity);
         entity = repository.save(entity);
-        return new ProductDTO(entity, entity.getCategories());
+        return new ProductDTO(entity, entity.getCategories())
+        		.add(linkTo(methodOn(ProductController.class).findById(entity.getId())).withRel("GET - Product by id"));
     }
 
     @Transactional
@@ -81,7 +86,8 @@ public class ProductService {
             Product entity = repository.getReferenceById(id);
             copyDTOToEntity(productDTO, entity);
             repository.save(entity);
-            return new ProductDTO(entity, entity.getCategories());
+            return new ProductDTO(entity, entity.getCategories())
+            		.add(linkTo(methodOn(ProductController.class).findById(entity.getId())).withRel("GET - Product by id"));
 
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
