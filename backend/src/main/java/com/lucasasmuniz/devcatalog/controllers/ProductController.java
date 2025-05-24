@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lucasasmuniz.devcatalog.dto.ProductDTO;
-import com.lucasasmuniz.devcatalog.projections.ProductProjection;
 import com.lucasasmuniz.devcatalog.services.ProductService;
 
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

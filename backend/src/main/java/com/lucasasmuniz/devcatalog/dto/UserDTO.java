@@ -3,13 +3,15 @@ package com.lucasasmuniz.devcatalog.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.lucasasmuniz.devcatalog.entities.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class UserDTO{
+public class UserDTO extends RepresentationModel<UserDTO>{
 	
 	@Schema(description = "Database generated product ID")
 	private long id;

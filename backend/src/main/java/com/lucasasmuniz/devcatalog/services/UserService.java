@@ -2,6 +2,9 @@ package com.lucasasmuniz.devcatalog.services;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lucasasmuniz.devcatalog.controllers.UserController;
 import com.lucasasmuniz.devcatalog.dto.UserDTO;
 import com.lucasasmuniz.devcatalog.dto.UserInsertDTO;
 import com.lucasasmuniz.devcatalog.dto.UserUpdateDTO;
@@ -44,18 +48,27 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
-		return repository.findAll(pageable).map(x -> new UserDTO(x));
+		return repository.findAll(pageable).map(x -> new UserDTO(x)
+				.add(linkTo(methodOn(UserController.class).findAllPaged(pageable)).withSelfRel())
+				.add(linkTo(methodOn(UserController.class).findById(x.getId())).withRel("GET - User by id")));
 	}
 
 	@Transactional(readOnly = true)
 	public UserDTO findById(Long id) {
 		User entity = repository.findById(id).orElseThrow(() -> (new ResourceNotFoundException("Entity not found")));
-		return new UserDTO(entity);
+		return new UserDTO(entity)
+				.add(linkTo(methodOn(UserController.class).findById(id)).withSelfRel())
+				.add(linkTo(methodOn(UserController.class).findAllPaged(null)).withRel("GET - Users"))
+				.add(linkTo(methodOn(UserController.class).update(id, null)).withRel("PUT - Update user"))
+				.add(linkTo(methodOn(UserController.class).delete(id)).withRel("DELETE - Delete user"));
 	}
 	
 	@Transactional(readOnly = true)
 	public UserDTO findLoggedUser() {
-		return new UserDTO(authService.authenticated());
+		User entity = authService.authenticated();
+		UserDTO dto = new UserDTO(entity)
+				.add(linkTo(methodOn(UserController.class).update(entity.getId(), null)).withRel("PUT - Update user"));
+		return dto;
 	}
 
 	@Transactional
@@ -69,7 +82,8 @@ public class UserService implements UserDetailsService {
 
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = repository.save(entity);
-		return new UserDTO(entity);
+		return new UserDTO(entity)
+				.add(linkTo(methodOn(UserController.class).findById(entity.getId())).withRel("GET - User by id"));
 	}
 
 	@Transactional
@@ -78,7 +92,8 @@ public class UserService implements UserDetailsService {
 			User entity = repository.getReferenceById(id);
 			copyDTOToEntity(dto, entity);
 			repository.save(entity);
-			return new UserDTO(entity);
+			return new UserDTO(entity)
+					.add(linkTo(methodOn(UserController.class).findById(entity.getId())).withRel("GET - User by id"));
 
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found " + id);
