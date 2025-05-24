@@ -1,5 +1,8 @@
 package com.lucasasmuniz.devcatalog.services;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lucasasmuniz.devcatalog.controllers.ProductController;
 import com.lucasasmuniz.devcatalog.dto.ProductDTO;
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
@@ -48,7 +52,10 @@ public class ProductService {
     	List<Product> entities = repository.searchProductsWithCategories(productIds);
     	entities = (List<Product>) Utils.orderListByReference(page.getContent(), entities);
     	
-    	List<ProductDTO> dtos = entities.stream().map(x -> new ProductDTO(x, x.getCategories())).toList();
+    	List<ProductDTO> dtos = entities.stream().map(x -> new ProductDTO(x, x.getCategories())
+    			.add(linkTo(methodOn(ProductController.class).findAllPaged(name, categoryIds, pageable)).withSelfRel())
+    			.add(linkTo(methodOn(ProductController.class).findById(x.getId())).withRel("Get product by id")))
+    			.toList();
     	Page<ProductDTO> pageDTO = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
     	
     	return pageDTO;

@@ -1,26 +1,23 @@
 package com.lucasasmuniz.devcatalog.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.lucasasmuniz.devcatalog.entities.Category;
 import com.lucasasmuniz.devcatalog.entities.Product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public class ProductDTO implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class ProductDTO extends RepresentationModel<ProductDTO>{
 	
 	@Schema(description = "Database generated product ID")
     private Long id;
