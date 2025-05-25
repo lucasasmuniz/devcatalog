@@ -6,6 +6,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +30,7 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
 
+    @Cacheable(value = "categories")
     @Transactional(readOnly = true)
     public List<CategoryDTO> findAll() {
         return categoryRepository.findAll().stream().map(x -> new CategoryDTO(x)
@@ -35,6 +39,7 @@ public class CategoryService {
         		.toList();
     }
 
+    @Cacheable(value = "categoryId", key = "#id")
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
         return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> (new ResourceNotFoundException("Entity not found"))))
@@ -44,6 +49,7 @@ public class CategoryService {
         		.add(linkTo(methodOn(CategoryController.class).delete(id)).withRel("DELETE - Delete category"));
     }
 
+    @CacheEvict(value = {"categoryId", "categories"}, allEntries = true)
     @Transactional
     public CategoryDTO insert(CategoryDTO categoryDTO) {
         Category entity = new Category();
@@ -53,6 +59,7 @@ public class CategoryService {
         		.add(linkTo(methodOn(CategoryController.class).findById(entity.getId())).withRel("GET - Category by id"));
     }
 
+    @CacheEvict(value = "categoryId", key = "#id")
     @Transactional
     public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
         try {
@@ -66,6 +73,8 @@ public class CategoryService {
             throw new ResourceNotFoundException("Id not found" + id);
         }
     }
+    
+    @CacheEvict(value = {"categoryId", "categories"}, allEntries = true)
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
