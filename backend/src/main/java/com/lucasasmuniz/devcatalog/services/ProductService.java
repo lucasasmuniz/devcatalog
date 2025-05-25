@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +39,7 @@ public class ProductService {
     private ProductRepository repository;
     @Autowired
     private CategoryRepository categoryRepository;
-
+    
     @SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
     public Page<ProductDTO> findAllPaged(String name, String categoryIds, Pageable pageable) {
@@ -61,6 +64,7 @@ public class ProductService {
     	return pageDTO;
     }
 
+    @Cacheable(value = "productsId", key = "#id")
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
         Product entity = repository.findById(id).orElseThrow(() -> (new ResourceNotFoundException("Entity not found")));
@@ -71,6 +75,7 @@ public class ProductService {
         		.add(linkTo(methodOn(ProductController.class).delete(id)).withRel("DELETE - Delete product"));
     }
 
+    
     @Transactional
     public ProductDTO insert(ProductDTO productDTO) {
         Product entity = new Product();
@@ -80,6 +85,7 @@ public class ProductService {
         		.add(linkTo(methodOn(ProductController.class).findById(entity.getId())).withRel("GET - Product by id"));
     }
 
+    @CachePut(value = "productsId", key = "#id")
     @Transactional
     public ProductDTO update(Long id, ProductDTO productDTO) {
         try {
@@ -93,6 +99,8 @@ public class ProductService {
             throw new ResourceNotFoundException("Id not found " + id);
         }
     }
+    
+    @CacheEvict(value = "productsId", key= "#id")
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {
