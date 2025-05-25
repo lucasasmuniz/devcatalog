@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -49,7 +49,7 @@ public class CategoryService {
         		.add(linkTo(methodOn(CategoryController.class).delete(id)).withRel("DELETE - Delete category"));
     }
 
-    @CacheEvict(value = {"categoryId", "categories"}, allEntries = true)
+    @CacheEvict(value = "categories", allEntries = true)
     @Transactional
     public CategoryDTO insert(CategoryDTO categoryDTO) {
         Category entity = new Category();
@@ -59,7 +59,10 @@ public class CategoryService {
         		.add(linkTo(methodOn(CategoryController.class).findById(entity.getId())).withRel("GET - Category by id"));
     }
 
-    @CacheEvict(value = "categoryId", key = "#id")
+    @Caching(evict = {
+    	    @CacheEvict(value = "categoryId", key = "#id"),
+    	    @CacheEvict(value = "categories", allEntries = true)
+    	})
     @Transactional
     public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
         try {
@@ -74,7 +77,10 @@ public class CategoryService {
         }
     }
     
-    @CacheEvict(value = {"categoryId", "categories"}, allEntries = true)
+    @Caching(evict = {
+    	    @CacheEvict(value = "categoryId", key = "#id"),
+    	    @CacheEvict(value = "categories", allEntries = true)
+    	})
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
