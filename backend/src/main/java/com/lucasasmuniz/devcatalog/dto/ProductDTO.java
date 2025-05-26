@@ -1,5 +1,6 @@
 package com.lucasasmuniz.devcatalog.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public class ProductDTO extends RepresentationModel<ProductDTO>{
+public class ProductDTO extends RepresentationModel<ProductDTO> implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
 	@Schema(description = "Database generated product ID")
     private Long id;

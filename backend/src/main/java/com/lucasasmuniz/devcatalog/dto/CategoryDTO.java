@@ -1,5 +1,7 @@
 package com.lucasasmuniz.devcatalog.dto;
 
+import java.io.Serializable;
+
 import org.springframework.hateoas.RepresentationModel;
 
 import com.lucasasmuniz.devcatalog.entities.Category;
@@ -8,7 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class CategoryDTO extends RepresentationModel<CategoryDTO>{
+public class CategoryDTO extends RepresentationModel<CategoryDTO> implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
 	@Schema(description = "Database generated product ID")
     private Long id;
