@@ -12,6 +12,28 @@ Este repositório contém uma aplicação Java Spring Boot desenvolvida com foco
 
 ---
 
+## Principais dependências estudadas no curso
+
+- Spring Boot
+- Spring Security (OAuth2)
+- Spring Data JPA
+- JaCoCo (Plugin)
+- Mockito / JUnit
+- RestAssured
+- Bean Validation
+- Java Mail Sender
+- PostgreSQL
+- H2 Database
+
+### Dependências adicionadas após o curso
+
+ Após terminar o curso, adicionei algumas dependências extras para enriquecer o projeto:
+
+ - Kafka, para o envio de e-mail para recuperação de senha
+ - Swagger, para documentação interativa da API
+ - Spring HATEOAS, para enriquecer as respostas da API com links e navegação.
+ - Spring Cache com Redis
+
 ## Estrutura do Curso e Anotações
 
 ### Módulo 1 – CRUD e Estruturação do Projeto
@@ -218,18 +240,6 @@ public static Response getAccessToken(String username, String password) {
 | refactor | Refatorações sem alterar comportamento                            |
 | chore    | Tarefas de manutenção (ex: atualização de dependências)           |
 | test     | Adição ou modificação de testes                                   |
-
----
-
-## ✅ Dependências Principais
-
-- Spring Boot
-- Spring Security (OAuth2)
-- Spring Data JPA
-- JaCoCo
-- Mockito / JUnit
-- RestAssured
-- Apache Kafka
 
 ---
 
