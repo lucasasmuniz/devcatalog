@@ -29,10 +29,10 @@ Este repositório contém uma aplicação Java Spring Boot desenvolvida com foco
 
  Após terminar o curso, adicionei algumas dependências extras para enriquecer o projeto:
 
- - Kafka, para o envio de e-mail para recuperação de senha
- - Swagger, para documentação interativa da API
- - Spring HATEOAS, para enriquecer as respostas da API com links e navegação.
- - Spring Cache com Redis
+ - `Kafka` – Para o envio de e-mail para recuperação de senha
+ - `OpenAPI` – Para documentação interativa da API
+ - `Spring HATEOAS` – Para enriquecer as respostas da API com links e navegação.
+ - `Spring Cache com Redis`
 
 ## Estrutura do Curso e Anotações
 
